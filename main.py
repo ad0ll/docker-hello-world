@@ -4,13 +4,14 @@ import pathlib
 
 def write_response(data: str, failed: bool = False, message: str =""):
     # pathlib.Path("/run/result").mkdir(parents=True, exist_ok=True)
-    with open("result.json", "w") as f:
-        f.write(f"""{{
+    result = f"""{{
                     "result": "{data}",
                     "failed": "{failed}",
                     "message": "{message}"
-                }}""")
-
+                }}"""
+    print("Dumping result: %s" % result)
+    with open("result.json", "w") as f:
+        f.write(result)
 if __name__ == '__main__':
     try:
         # Index 12 is ETH/USDT, use res.data[12].weightedAvgPrice
