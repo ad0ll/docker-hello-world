@@ -1,24 +1,23 @@
 import requests
-import os
-import pathlib
-
-def write_response(data: str, failed: bool = False, message: str =""):
+import json
+def write_response(data: str,message: str =""):
     # pathlib.Path("/run/result").mkdir(parents=True, exist_ok=True)
-    result = f"""{{
-                    "result": "{data}",
-                    "failed": "{failed}",
-                    "message": "{message}"
-                }}"""
-    print("Dumping result: %s" % result)
+    result_json = json.dumps({
+        "bounty_data": {
+            "result": data,
+            "message": message
+        }
+    })
+    print(result_json)
     with open("result.json", "w") as f:
-        f.write(result)
+        f.write(result_json)
+
 if __name__ == '__main__':
     try:
         # Index 12 is ETH/USDT, use res.data[12].weightedAvgPrice
         resp = requests.get("https://api2.binance.com/api/v3/ticker/24hr")
-        # See PyCharm help at https://www.jetbrains.com/help/pycharm/
         elems = resp.json()
-        write_response(elems[12]["weightedAvgPrice"])
+        write_response(elems[12]["weightedAvgPrice"], "this is a test message")
     except Exception as e:
         message = e.message if hasattr(e, 'message') else ""
-        write_response("", failed=True, message=message)
+        write_response("", message=message)
